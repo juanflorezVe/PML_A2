@@ -1,39 +1,25 @@
 Impact of different data balancing techniques in the random forest classification accuracy of the adult data set.
 
 Abstract:
-The adult data set (https://archive.ics.uci.edu/ml/datasets/adult). Has been around since 1994, and has been used as a classification problem, linking different data (i.e Education) to income level. If we use this dataset to classify income level (i.e. over or under 50k), the data will be Highly unbalanced, giving around 90% accuracy just by classifying everyone under 50K. 
+The adult data set (https://archive.ics.uci.edu/ml/datasets/adult) has been around since 1994, and has been used as a classification problem, linking different data (i.e Education) to income level. 
+If we use this dataset to classify income level (i.e. over or under 50k), the data will be Highly unbalanced, giving around 2 out of 3 hits just by classifying everyone under 50K. 
 
 In this paper, I assessed the effect that different data balancing techniques have in the default random forest classification using 300 estimators.
-In order to isolate the real effect of the different balancing techniques, I did a basic data preprocessing and used the confusion matrix to monitor the impact of the balancing techniques in the model.
+In order to isolate the real effect of the different balancing techniques, I did a basic data preprocessing and used the confusion matrix to monitor 
+the impact of the balancing techniques in the model.
 
-Random Forest method was selected over SVM, KNN, and Neuroteworks, as it gave the better initial classification (trying when possible to use default values of scikit learn).
+Random Forest method was selected randomly over SVC, KNN, and Neuroteworks, as the pourpose of this paper it to understand the impact of different class balancing techniques over one model. (trying when possible to use default values of scikit learn).
 
 (TODO: Include results here)
 
 Introduction:
 This paper is a hectic attempt to show my understanding of the basic process to build, calibrate and evaluate a model for machine learning over a specific dataset. (under 10 hours of work).
-The first version, (delivered on time) will show the basic preprocessing of the data, the run of the models over that data and the effects that different class balancing approaches on the training data have on the overall accuracy of the models.
+The first version, (hopefully delivered on time) will show the basic preprocessing of the data, the run of the models over that data and the effects that different class balancing approaches on the training data have on the overall accuracy of the models.
 I will attempt to deliver a version 2 or even a 3 if I have the time after my other courses and my year’s close at work, and I see that I can significantly improve my grade.
 The evaluation of the models in the first version is done using the confusion matrix, particularly focussing on reducing the number of False Negatives (i.e. records that the model wrongly shows as not making more than 50k), due to time pressure, no cross-validation nor hyperparameter optimization will be performed in this first version.
 The adult data set has been precleaned of null values and its data quality is good enough to allow me to isolate the effects of data balancing.
 
 (TODO: finish)
-
-Report research.
-Your abstract
-should provide a short summary of the work that you undertook as part of the project.
-It should primarily provide an account of the main objectives
-and a summary of the results.
-In your introduction you should provide a
-description of your chosen dataset
-. You should clearly
-identify the target regression or classification value that you want to predict. Describe the
-motivation for building models for
-this dataset
-and the objectives of the study
-.
-Your introduction
-should also highlight any previous academic papers that used this dataset.
 
 Research:
 Please refear to model_v2.ipynb (Jupyter Notebook).
@@ -44,4 +30,56 @@ The data set has 15 columns, in order to increase my speed, and remove personal 
 The one that shows either <=50k or > 50k. as the class.
 
 Preprosessing:
- 
+Null values:
+This particular dataset has been cleaned out of null values, and this is confirmed by running data.info() and data.isnull().sum()
+
+Features encoding:
+I ran a basic encoding in all the columns to ensure work with numbers. for simplicity, and as I want to isolate the effects of the balancing techniques, I did not run one hot encoding, as I do not know if it will affect my results. (see future work recommendations)
+
+Divide data into training, validation, and test:
+I took 20 percent of the data to learn and train the model.
+
+Scaled data:
+Using the StandardScaler, I scaled the features in the traing and test sets (notice I did not touch the class data). so there are no features obscuring other just because of big numbers.
+
+Confirming unbalanced data:
+Fig XX shows the relative amount between clases in the TESTING set. (>50k, is class '1')
+
+
+Learning the models and testing their accuracy:
+
+In the first ran, each model was fit 1 time using train data and evaluated 1 time using test data; without any hyperparameter optimization.
+SVC
+Random Forest (300 runs)
+K Nearest Neighbours 
+MLP Classifier.
+
+
+Applying different balancing techniques:
+First of all, it is worth noting that the balancing techniques are applied to the TRAINING DATA, meaning, the test data, and indeed the "real data set" that the model is aiming to predict should not be "contaminated" with synthetic data.
+
+In the interest of time, I skiped over and under sampling. which are techniques to randomly add, or substract instances in order to arrive to a training set that has a balanced amount of instances of different classes.
+
+SMOTE:
+SMOTE will create instances of the minority class in areas "that are expected". Rather than creating new instances randomly, it creates instances "in the neighbourhood or along connecting lines between similar instances.
+
+ADASYN:
+Adaptive Synthetic Sampling Method for Imbalanced Data 
+
+"The major difference between SMOTE and ADASYN is the difference in the generation of synthetic sample points for minority data points. In ADASYN, we consider a density distribution r? which thereby decides the number of synthetic samples to be generated for a particular point, whereas in SMOTE, there is a uniform weight for all minority points." (Citation https://sci2s.ugr.es/keel/pdf/algorithm/congreso/2008-He-ieee.pdf").
+
+Conclussion
+We can see an increase of circa 50% on the accurace to identify instances on the minority class by applying ADASYN over SMOTE.
+The reason, I expeculate, is that due to the nature of the dataset, the features may be heavily related (oposite to an assumption of idepence expected by a basic Baysian approach). so, by increasing the synthetic data in the areas of mayor density, the ADASYN model presents a clear advantage over the SMOTE technique. Anyway future work remains to be done in order to really confirm the results.
+
+
+Future work recommendations:
+Things that still can be done to evaluate the results:
+run cross folding validation
+run hyper parameter optimization
+run feature selection
+
+run one hot encoding in the most relevant ratures, ie, education, job type, family membership. 
+run outlayer detection.
+run undersampling and oversampling
+run each model a number of times and evaluate the results by the median of all the runs.
